@@ -1,0 +1,129 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Retail Business Performance Analysis
+
+# Sample Retail Dataset
+data = {
+    'Category': [
+        'Electronics', 'Furniture', 'Clothing',
+        'Electronics', 'Furniture', 'Clothing',
+        'Electronics', 'Furniture', 'Clothing',
+        'Electronics'
+    ],
+    'Sub_Category': [
+        'Mobile', 'Chair', 'Shirt',
+        'Laptop', 'Table', 'Jeans',
+        'Mobile', 'Chair', 'Shirt',
+        'Laptop'
+    ],
+    'Sales': [
+        50000, 30000, 15000, 80000, 40000,
+        20000, 60000, 35000, 18000, 90000
+    ],
+    'Cost': [
+        35000, 25000, 10000, 60000, 30000,
+        14000, 40000, 28000, 12000, 65000
+    ],
+    'Inventory_Days': [
+        20, 45, 15, 30, 60,
+        25, 35, 50, 18, 40
+    ],
+    'Season': [
+        'Summer', 'Winter', 'Summer', 'Winter',
+        'Rainy', 'Summer', 'Winter', 'Rainy',
+        'Summer', 'Winter'
+    ]
+}
+
+df = pd.DataFrame(data)
+
+# 1. Display Original Data
+print("\nRETAIL BUSINESS DATA")
+print(df)
+
+# 2. Check Missing Values
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# 3. Clean Missing Values
+df = df.dropna()
+
+# 4. Calculate Profit
+df['Profit'] = df['Sales'] - df['Cost']
+
+# 5. Calculate Profit Margin
+df['Profit_Margin'] = (
+    df['Profit'] / df['Sales']
+) * 100
+
+print("\nPROFIT ANALYSIS")
+print(df[['Category', 'Sales', 'Profit',
+          'Profit_Margin']])
+
+# 6. Category-wise Profit
+category_profit = df.groupby(
+    'Category'
+)['Profit'].sum()
+
+print("\nCATEGORY WISE PROFIT")
+print(category_profit)
+
+# 7. Sub-category Analysis
+subcategory_profit = df.groupby(
+    'Sub_Category'
+)['Profit'].sum()
+
+print("\nSUB CATEGORY PROFIT")
+print(subcategory_profit)
+
+# 8. Inventory and Profit Correlation
+correlation = df[
+    ['Inventory_Days', 'Profit']
+].corr()
+
+print("\nCORRELATION")
+print(correlation)
+
+# 9. Seasonal Sales Analysis
+season_sales = df.groupby(
+    'Season'
+)['Sales'].sum()
+
+print("\nSEASONAL SALES")
+print(season_sales)
+
+# 10. Save Results
+df.to_csv('retail_analysis_result.csv',
+          index=False)
+
+# 11. Category Profit Graph
+plt.figure(figsize=(8, 5))
+category_profit.plot(kind='bar')
+plt.title('Category Wise Profit')
+plt.xlabel('Category')
+plt.ylabel('Profit')
+plt.tight_layout()
+plt.show()
+
+# 12. Seasonal Sales Graph
+plt.figure(figsize=(8, 5))
+season_sales.plot(kind='bar')
+plt.title('Seasonal Sales Analysis')
+plt.xlabel('Season')
+plt.ylabel('Sales')
+plt.tight_layout()
+plt.show()
+
+# 13. Correlation Heatmap
+plt.figure(figsize=(6, 4))
+sns.heatmap(correlation, annot=True,
+            cmap='coolwarm')
+plt.title('Inventory and Profit Correlation')
+plt.tight_layout()
+plt.show()
+
+print("\nAnalysis Completed Successfully!")
+print("Result saved as retail_analysis_result.csv")
